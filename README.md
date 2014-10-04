@@ -1,4 +1,4 @@
 fisica
 ======
 
-Ejercicios de física esctritos en Scilab 
+Ejercicios de física escritos en Scilab 
