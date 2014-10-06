@@ -77,8 +77,8 @@ if vo < 0
     vo = askForVo();
 end
 
-vox = vo * cos(theta);
-voy = vo * sin(theta);
+vox = vo * cos(toRad(theta));
+voy = vo * sin(toRad(theta));
 xo = 0;
 yo = 1;
 dt = 0.001;

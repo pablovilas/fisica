@@ -76,8 +76,8 @@ function ejercicio1()
     theta = evstr(thetaTxt.string);
     vo = evstr(voTxt.string);
     
-    vox = vo * cos(theta);
-    voy = vo * sin(theta);
+    vox = vo * cos(toRad(theta));
+    voy = vo * sin(toRad(theta));
     xo = 0;
     yo = 1;
     dt = 0.001;
@@ -89,6 +89,7 @@ function ejercicio1()
     plotter = gca();
     plotter.title.font_size = 5;
     plotter.axes_bounds = [1/3,0,2/3,1];
+    //plotter.auto_clear = 'on';
     xtitle('Ejercicio 1 (Velocidad inicial: ' + string(vo) + ', Angulo: ' + string(theta) + ')') ;
     plot2d(x, y, style=color("red"), frameflag=6);
 	drawnow();
