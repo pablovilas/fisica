@@ -26,6 +26,8 @@ function []=plotEarth()
     plot2d(x, y, style=color("green"), axesflag=5);
 endfunction
 
+plotEarth();
+
 function [vectorX, vectorY]=ballPosition(funAx, funAy, vx0, vy0, x0, y0, dt)
     i = 1
     x(1) = x0;
