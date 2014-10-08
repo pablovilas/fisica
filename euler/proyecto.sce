@@ -19,6 +19,11 @@ function rad=toRad(degrees)
     rad = degrees * %pi / 180;
 endfunction
 
+function degrees=toDegrees(rad)
+    degrees = rad * 180 / %pi;
+endfunction
+
+
 function []=plotEarth()
     // Centro de la cfa
     x0 = 0;
@@ -39,8 +44,11 @@ exercise1 = list("Ejercicio 1", "ejercicio1", ["theta" "vo"]);
 exercise2 = list("Ejercicio 2", "ejercicio2", ["vo"]);
 exercise4 = list("Ejercicio 4", "ejercicio4", []);
 exercise7 = list("Ejercicio 7", "ejercicio7", ["v1" "v2" "v3" "v4"]);
+exercise8 = list("Ejercicio 8", "ejercicio8", []);
+exercise9 = list("Ejercicio 9", "ejercicio9", []);
+exercise10 = list("Ejercicio 10", "ejercicio10", []);
 
-exercises = list(exercise1, exercise2, exercise4, exercise7);
+exercises = list(exercise1, exercise2, exercise4, exercise7, exercise8, exercise9, exercise10);
 
 // Interface GUI
 startGUI(exercises);
@@ -188,11 +196,11 @@ function ejercicio4()
 endfunction
 
 function ax=ax7(i, x, y)
-    ax= (-G * mt * x(i)) / (sqrt(x(i)^2 + y(i)^2))^3;
+    ax= -(G * mt) * x(i) / ((sqrt(x(i)^2 + y(i)^2))^3);
 endfunction
 
 function ay=ay7(i, x, y)
-    ay= (-G * mt * y(i)) / (sqrt(x(i)^2 + y(i)^2))^3;;
+    ay= -(G * mt) * y(i) / ((sqrt(x(i)^2 + y(i)^2))^3);
 endfunction
 
 function [vectorX, vectorY]=ballPositionWithG(funAx, funAy, vx0, vy0, x0, y0, dt)
@@ -201,8 +209,7 @@ function [vectorX, vectorY]=ballPositionWithG(funAx, funAy, vx0, vy0, x0, y0, dt
     y(1) = y0;
     vx(1) = vx0;
     vy(1) = vy0;
-    
-    vr = r + 1; // Un valor apenas mas grande solo para comenzar la iteracion
+    vr = r + 1;
     
     while vr > r
         ax(i)   = funAx(i, x);
@@ -241,9 +248,6 @@ function ejercicio7()
     [x3, y3] = ballPositionWithG(ax7, ay7, v3x, voy, xo, yo, dt);
     [x4, y4] = ballPositionWithG(ax7, ay7, v4x, voy, xo, yo, dt);
     
-    disp(x);
-    disp(y);
-    
     // Redraw window
     drawlater();
     plotter = gca();
@@ -260,4 +264,105 @@ function ejercicio7()
 endfunction
 
 function ejercicio8()
+    vox = 3000;
+    voy = 0;
+    xo = 0;
+    yo = 500 * 1000 + r;
+    dt = 1;
+    
+    [x, y] = ballPositionWithG(ax7, ay7, vox, voy, xo, yo, dt);
+    
+    xf = x($);
+    yf = y($);
+    theta = atan(xf/yf);
+    s = theta * r;
+    messagebox('El angulo de caida es : ' + string(toDegrees(theta)) + '° y la distancia recorrida: ' + string(s) + 'm');
+endfunction
+
+function [vectorX, vectorY]=ballPositionWithG9(funAx, funAy, vx0, vy0, x0, y0, dt)
+    i = 1
+    x(1) = x0;
+    y(1) = y0;
+    vx(1) = vx0;
+    vy(1) = vy0;
+    
+    while y(i) > 0
+        ax(i)   = funAx(i, x);
+        ay(i)   = funAy(i, y);
+        vx(i+1) = vx(i) + ax(i) * dt;
+        vy(i+1) = vy(i) + ay(i) * dt;
+        x(i+1)  = x(i) + vx(i) * dt;
+        y(i+1)  = y(i) + vy(i) * dt;
+
+        i= i+1;        
+    end
+    
+    vectorX = x;
+    vectorY = y;    
+endfunction
+
+function ejercicio9()
+    voy = 0;
+    xo = 0;
+    yo = 500 * 1000 + r;
+    dt = 1;
+    xf = r;
+    yf = 0;
+    vf = 0;
+    
+    for i = 6500:1:7500
+        vox = i;
+        [x, y] = ballPositionWithG9(ax7, ay7, vox, voy, xo, yo, dt);
+
+        if x($) > xf then
+              vf = i;
+              break;
+        end
+    end 
+    
+    messagebox('La velocidad inicial en el eje Y aproximada es : ' + string(vf));
+endfunction
+
+function [vectorX, vectorY]=ballPositionWithG10(funAx, funAy, vx0, vy0, x0, y0, dt)
+    i = 1
+    x(1) = x0;
+    y(1) = y0;
+    vx(1) = vx0;
+    vy(1) = vy0;
+    
+    while x(i) > 0
+        ax(i)   = funAx(i, x);
+        ay(i)   = funAy(i, y);
+        vx(i+1) = vx(i) + ax(i) * dt;
+        vy(i+1) = vy(i) + ay(i) * dt;
+        x(i+1)  = x(i) + vx(i) * dt;
+        y(i+1)  = y(i) + vy(i) * dt;
+
+        i= i+1;        
+    end
+    
+    vectorX = x;
+    vectorY = y;    
+endfunction
+
+function ejercicio10()
+    voy = 0;
+    xo = 0;
+    yo = 500 * 1000 + r;
+    dt = 1;
+    xf = 0;
+    yf = -r;
+    vf = 0;
+    
+    for i = 6500:1:7500
+        vox = i;
+        [x, y] = ballPositionWithG10(ax7, ay7, vox, voy, xo, yo, dt);
+
+        if y($) < yf then
+              vf = i;
+              break;
+        end
+    end 
+    
+    messagebox('La velocidad inicial en el eje Y aproximada es : ' + string(vf));
 endfunction
